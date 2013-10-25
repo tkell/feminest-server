@@ -25,9 +25,14 @@ def hello():
 @app.route('/get-data/<artist_name>', methods=['GET'])
 def get_data(artist_name):
 
+    print "in get data, with %s" % artist_name
+
     # OK, so this will read the JSON back out.  Rad.  
     res_string = redis.get(artist_name)
+    print "read %s from redis" % res_string
+
     res_dict = json.loads(res_string)
+    print "made dict:  %s" % res_dict
 
     return jsonify(**res_dict)
 
