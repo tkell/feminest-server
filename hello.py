@@ -41,6 +41,6 @@ def get_data(artist_name):
 def find_data(artist_name):
 
     # need to write something to redis here
-    redis.set('artist_name', '{"artist": %s}' % artist_name)
+    redis.set(artist_name, '{"artist": %s}' % artist_name)
 
     return "feminest::find %s" % (artist_name)
