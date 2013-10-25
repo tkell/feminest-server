@@ -3,6 +3,7 @@ import urlparse
 import json
 from flask import Flask
 from flask import request
+from flask import jsonify
 
 import redis
 url = urlparse.urlparse(os.environ.get('REDISTOGO_URL', 'redis://localhost'))
@@ -28,7 +29,7 @@ def get_data(artist_name):
     res_string = redis.get(artist_name)
     res_dict = json.loads(res_string)
 
-    return flask.jsonify(**res_dict)
+    return jsonify(**res_dict)
 
 
 @app.route('/find-data/<artist_name>', methods=['GET'])
