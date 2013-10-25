@@ -1,5 +1,6 @@
 import os
 import urlparse
+import json
 from flask import Flask
 from flask import request
 
@@ -23,16 +24,17 @@ def hello():
 @app.route('/get-data/<artist_name>', methods=['GET'])
 def get_data(artist_name):
 
-    # and get the same hard-coded key here
-    redis.set('test-key-2', 'test-value')
+    # OK, so this will read the JSON back out.  Rad.  
+    res_string = redis.get(artist_name)
+    res_dict = json.loads(res_string)
 
-    return "feminest::get %s" % artist_name
+    return flask.jsonify(**res_dict)
 
 
 @app.route('/find-data/<artist_name>', methods=['GET'])
 def find_data(artist_name):
 
     # need to write something to redis here
-    val = redis.get('test-key')
+    redis.set('artist_name', '{"artist": %s}' % artist_name)
 
-    return "feminest::find %s - %s" % (artist_name, val)
+    return "feminest::find %s" % (artist_name)
