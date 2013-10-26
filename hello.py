@@ -5,6 +5,8 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 
+app = Flask(__name__)
+
 from pyechonest import config, artist
 config.ECHO_NEST_API_KEY = 'WOUHTN44BMS5SMPF2'
 
@@ -12,7 +14,9 @@ import redis
 url = urlparse.urlparse(os.environ.get('REDISTOGO_URL', 'redis://localhost'))
 redis = redis.Redis(host=url.hostname, port=url.port, db=0, password=url.password)
 
-app = Flask(__name__)
+from names import male_names, female_names
+
+
 
 def pronoun_search(the_artist):
     bios = []
@@ -49,7 +53,7 @@ def pronoun_search(the_artist):
         for name in female_names(): 
              female_name_count = female_name_count + bio_list.count(name)
     return {'number_bios': len(bios), 'male_pronouns': male_pronoun_count, 'female_pronouns': female_pronoun_count, 
-                'male_names': male_name_count, 'female_name_count', female_name_count)
+                'male_names': male_name_count, 'female_name_count': female_name_count}
 
 
 
