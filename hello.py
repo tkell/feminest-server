@@ -24,7 +24,6 @@ female_names_list = female_names()
 
     # TODOS:
     # - Make the front end
-    # Make the guess
     # - Scrape Discogs properly
     # - Get sound from Rdio
     # then I need to run this on ~5,000 hottt artists
@@ -72,7 +71,7 @@ def pronoun_search(the_artist):
         for name in female_names(): 
              female_name_count = female_name_count + bio_list.count(name)
     return {'number_bios': len(bios), 'male_pronouns': male_pronoun_count, 'female_pronouns': female_pronoun_count, 
-                'male_names': male_name_count, 'female_name_count': female_name_count, 'word_count': word_count}
+                'male_names': male_name_count, 'female_names': female_name_count, 'word_count': word_count}
 
 def _clean_tags(string):
     string = string.replace('<td>', '')
