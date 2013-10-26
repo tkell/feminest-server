@@ -56,6 +56,8 @@ def pronoun_search(the_artist):
 def find_artist_data(artist_name):
 
     the_artist = artist.search(artist_name, results=1)[0]
+
+    print "the artist we found %s" % the_artist
     if not the_artist:  
         return ''
 
