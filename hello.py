@@ -57,6 +57,15 @@ def pronoun_search(the_artist):
     return {'number_bios': len(bios), 'male_pronouns': male_pronoun_count, 'female_pronouns': female_pronoun_count, 
                 'male_names': male_name_count, 'female_name_count': female_name_count}
 
+def _clean_tags(string):
+    string = string.replace('<td>', '')
+    string = string.replace('</td>', '')
+    string = string.replace('<br />', '')
+    string = string.replace('</a>', '')
+    if '<a href' in string:
+        string = re.search(r'<a href=.+?>(.+)', string, re.S).group(1)
+    return string.strip()
+
 def wiki_member_search(the_artist):
     if the_artist.urls.get('wikipedia_url', None):
         wiki_url = the_artist.urls['wikipedia_url']
@@ -72,16 +81,19 @@ def wiki_member_search(the_artist):
 
 
         if 'Members' not in infobox:
+            print "members not found"
             number_members = 1
             men = 0
             women = 0
             member_names = ''
         else:
+            print "members found"
             men = 0
             women = 0
             members = re.search(r'<th scope="row" style="text-align:left;">Members</th>(.+?)</tr>', infobox, re.S).group(1)
+            print "made it past second big regex"
             members = members.split('<br />')
-            members = [clean_tags(m) for m in members]
+            members = [_clean_tags(m) for m in members]
             number_members = len(members)
             for name in members:
                 if ' ' in name:
@@ -94,7 +106,8 @@ def wiki_member_search(the_artist):
                         men = men + 1
                     elif name in female_names():
                         women = women + 1
-            print "men:  %d -- women:  %d" % (men, women)
+
+        print "men:  %d -- women:  %d" % (men, women)
         return {'wiki_url': wiki_url, 'members': number_members, 'men': men, 'women': women, 'member_names': members}
     else:
         return {'wiki_url': ''}
