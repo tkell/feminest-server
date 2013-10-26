@@ -65,7 +65,8 @@ def find_artist_data(artist_name):
     data['artist'] = the_artist.name
     data.update(pronouns_dict)
 
-    
+    print "in find_artist_data, with a dict of %s" % data
+
     # number of bios, number of words, members, gender of members, number of male pronouns, number of female pronouns
     # number of male names, number of female names
     # our guess
