@@ -122,6 +122,7 @@ def discogs_release_search(the_artist):
 
     releases = []
     # Discogs data is terrible.  Fuck. We'll use this as a row of thumbnails and links below the Rdio player
+    # CLOSE ENOUGH FOR SEISMOLOGY
     for release in r.json().get('releases', [])[0:10]:
         releases.append({'title': release.get('title', ''), 'thumbnail': release.get('thumb', ''), 'url': release.get('uri', '')})
     return releases
@@ -161,7 +162,11 @@ def find_artist_data(artist_name):
 
 
     # audiod?
-    # our gues?S?!?  How do I want to do this?
+    # OK!  So I need to get a list of songs to load into the Rdio player
+    # then I need to run this on ~5,000 hottt artists
+    # then I need to make the front end.  Gotta get up early early tomorrow
+
+    # and that includes making our guess.  Solo artists, we use pronouns.  Multi artists, we use name match on membmers, weighted by pronouns
 
 
     
