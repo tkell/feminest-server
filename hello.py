@@ -85,7 +85,7 @@ def wiki_member_search(the_artist):
             number_members = 1
             men = 0
             women = 0
-            member_names = ''
+            members = ''
         else:
             print "members found"
             men = 0
