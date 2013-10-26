@@ -19,9 +19,9 @@ redis = redis.Redis(host=url.hostname, port=url.port, db=0, password=url.passwor
 
 from names import male_names, female_names
 
-
 def pronoun_search(the_artist):
     bios = []
+    word_count = 0
     male_pronoun_count = 0
     female_pronoun_count = 0
     male_name_count = 0
@@ -33,6 +33,7 @@ def pronoun_search(the_artist):
 
     for bio in bios:
         bio_list = bio.split(' ')
+        word_count = word_count + len(bio_list)
         bio_list = [word.strip(',./`!@#$%^&*()-_=+|\][{}') for word in bio_list]
         
         pronouns = {'he': 0,
@@ -55,7 +56,7 @@ def pronoun_search(the_artist):
         for name in female_names(): 
              female_name_count = female_name_count + bio_list.count(name)
     return {'number_bios': len(bios), 'male_pronouns': male_pronoun_count, 'female_pronouns': female_pronoun_count, 
-                'male_names': male_name_count, 'female_name_count': female_name_count}
+                'male_names': male_name_count, 'female_name_count': female_name_count, 'word_count': word_count}
 
 def _clean_tags(string):
     string = string.replace('<td>', '')
@@ -113,6 +114,18 @@ def wiki_member_search(the_artist):
         return {'wiki_url': ''}
         
 
+def discogs_release_search(the_artist):
+    discogs_id = the_artist.get_foreign_id('discogs').split(':')[2]
+    url = 'http://api.discogs.com/artists/%s/releases' % discogs_id
+    r = requests.get(url)
+
+    releases = []
+    for release in r.json()['releases']:
+        format = release.get('format', '')
+        if 'single' in format.lower():
+            releases.append({'title': release['title'], 'thumbnail':release['thumb'], 'url': release['uri']})
+    return releases
+
 def find_artist_data(artist_name):
 
     the_artist = artist.search(artist_name, results=1)[0]
@@ -121,24 +134,35 @@ def find_artist_data(artist_name):
     if not the_artist:  
         return ''
 
+    data = {}
+    data['artist'] = the_artist.name
+
     pronouns_dict = pronoun_search(the_artist)
+    data.update(pronouns_dict)
     print "we got the pronoun dict"
 
     wiki_dict = wiki_member_search(the_artist)
+    data.update(wiki_dict)
     print "we got the wiki dict"
 
-    data = {}
-    data['artist'] = the_artist.name
-    data.update(pronouns_dict)
-    data.update(wiki_dict)
+    images = the_artist.images
+    data['image_urls'] = [image['url'] for image in images[0:5]]
+    print "we got the echonest images"
+
+    data['discogs_release'] = discogs_release_search(the_artist)
+    print "we got the discogs releases"
 
     print "in find_artist_data, with a dict of %s" % data
 
     # number of bios, number of words, members, gender of members, number of male pronouns, number of female pronouns
     # number of male names, number of female names
-    # our guess
-    # echonest images
+    # echonest image - 5
     # discogs releases, discogs images, discogs links
+
+
+    # audiod?
+    # our gues?S?!?  How do I want to do this?
+
 
     
     return json.dumps(data)
