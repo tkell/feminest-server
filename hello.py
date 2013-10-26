@@ -18,6 +18,8 @@ url = urlparse.urlparse(os.environ.get('REDISTOGO_URL', 'redis://localhost'))
 redis = redis.Redis(host=url.hostname, port=url.port, db=0, password=url.password)
 
 from names import male_names, female_names
+males_names_list = male_names()
+female_names_list = female_names()
 
 def pronoun_search(the_artist):
     bios = []
@@ -98,14 +100,14 @@ def wiki_member_search(the_artist):
             number_members = len(members)
             for name in members:
                 if ' ' in name:
-                    if name.split(' ')[0] in male_names():
+                    if name.split(' ')[0] in males_names_list:
                         men = men + 1
-                    elif name.split(' ')[0] in female_names():
+                    elif name.split(' ')[0] in females_names_list:
                         women = women + 1
                 else:
-                    if name in male_names():
+                    if name in males_names_list:
                         men = men + 1
-                    elif name in female_names():
+                    elif name in females_names_list:
                         women = women + 1
 
         print "men:  %d -- women:  %d" % (men, women)
@@ -161,8 +163,11 @@ def find_artist_data(artist_name):
     # discogs releases, discogs images, discogs links
 
 
-    # audiod?
-    # OK!  So I need to get a list of songs to load into the Rdio player
+    # TODOS:
+    # Data for Tom Waits, CHVRCHES, My Bloody Valentine
+    # - Make the front end
+    # - Scrape Discogs properly
+    # - Get sound from Rdio
     # then I need to run this on ~5,000 hottt artists
     # then I need to make the front end.  Gotta get up early early tomorrow
 
