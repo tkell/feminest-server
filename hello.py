@@ -1,10 +1,13 @@
 import os
 import urlparse
 import json
+import re
+
+import requests
+
 from flask import Flask
 from flask import request
 from flask import jsonify
-
 app = Flask(__name__)
 
 from pyechonest import config, artist
@@ -15,7 +18,6 @@ url = urlparse.urlparse(os.environ.get('REDISTOGO_URL', 'redis://localhost'))
 redis = redis.Redis(host=url.hostname, port=url.port, db=0, password=url.password)
 
 from names import male_names, female_names
-
 
 
 def pronoun_search(the_artist):
@@ -55,7 +57,42 @@ def pronoun_search(the_artist):
     return {'number_bios': len(bios), 'male_pronouns': male_pronoun_count, 'female_pronouns': female_pronoun_count, 
                 'male_names': male_name_count, 'female_name_count': female_name_count}
 
+def wiki_member_search(the_artist):
+    if the_artist.urls.get('wikipedia_url', None):
 
+
+        wiki_url = the_artist.urls['wikipedia_url']
+        res = requests.get(wiki_url)
+        body = res.text
+        infobox = re.search(r'<table class="infobox.+?</table>', body, re.S).group()
+        if 'Members' not in infobox:
+            number_members = 1
+            men = 0
+            women = 0
+            member_names = ''
+        else:
+            men = 0
+            women = 0
+            members = re.search(r'<th scope="row" style="text-align:left;">Members</th>(.+?)</tr>', infobox, re.S).group(1)
+            members = members.split('<br />')
+            members = [clean_tags(m) for m in members]
+            number_members = len(members)
+            for name in members:
+                if ' ' in name:
+                    if name.split(' ')[0] in male_names():
+                        men = men + 1
+                    elif name.split(' ')[0] in female_names():
+                        women = women + 1
+                else:
+                    if name in male_names():
+                        men = men + 1
+                    elif name in female_names():
+                        women = women + 1
+            print "men:  %d -- women:  %d" % (men, women)
+        return {'wiki_url': wiki_url, 'members': number_members, 'men': men, 'women': women, 'member_names': members}
+    else:
+        return {'wiki_url': ''}
+        
 
 def find_artist_data(artist_name):
 
@@ -66,10 +103,12 @@ def find_artist_data(artist_name):
         return ''
 
     pronouns_dict = pronoun_search(the_artist)
+    wiki_dict = wiki_member_search(the_artist)
 
     data = {}
     data['artist'] = the_artist.name
     data.update(pronouns_dict)
+    data.update(wiki_dict)
 
     print "in find_artist_data, with a dict of %s" % data
 
