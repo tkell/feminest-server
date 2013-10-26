@@ -18,7 +18,7 @@ url = urlparse.urlparse(os.environ.get('REDISTOGO_URL', 'redis://localhost'))
 redis = redis.Redis(host=url.hostname, port=url.port, db=0, password=url.password)
 
 from names import male_names, female_names
-males_names_list = male_names()
+male_names_list = male_names()
 female_names_list = female_names()
 
 def pronoun_search(the_artist):
@@ -100,14 +100,14 @@ def wiki_member_search(the_artist):
             number_members = len(members)
             for name in members:
                 if ' ' in name:
-                    if name.split(' ')[0] in females_names_list:
+                    if name.split(' ')[0] in female_names_list:
                         women = women + 1
-                    if name.split(' ')[0] in males_names_list:
+                    if name.split(' ')[0] in male_names_list:
                         men = men + 1
                 else:
-                    if name in females_names_list:
+                    if name in female_names_list:
                         women = women + 1
-                    if name in males_names_list:
+                    if name in male_names_list:
                         men = men + 1
 
         print "men:  %d -- women:  %d" % (men, women)
