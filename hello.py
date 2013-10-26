@@ -100,15 +100,15 @@ def wiki_member_search(the_artist):
             number_members = len(members)
             for name in members:
                 if ' ' in name:
+                    if name.split(' ')[0] in females_names_list:
+                        women = women + 1
                     if name.split(' ')[0] in males_names_list:
                         men = men + 1
-                    elif name.split(' ')[0] in females_names_list:
-                        women = women + 1
                 else:
+                    if name in females_names_list:
+                        women = women + 1
                     if name in males_names_list:
                         men = men + 1
-                    elif name in females_names_list:
-                        women = women + 1
 
         print "men:  %d -- women:  %d" % (men, women)
         return {'wiki_url': wiki_url, 'members': number_members, 'men': men, 'women': women, 'member_names': members}
