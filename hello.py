@@ -121,10 +121,9 @@ def discogs_release_search(the_artist):
     print "DISCOGS:  made it past the requests request"
 
     releases = []
-    for release in r.json().get('releases', []):
-        format = release.get('format', '')
-        if 'single' in format.lower():
-            releases.append({'title': release.get('title', ''), 'thumbnail': release.get('thumb', ''), 'url': release.get('uri', '')})
+    # Discogs data is terrible.  Fuck. We'll use this as a row of thumbnails and links below the Rdio player
+    for release in r.json().get('releases', [])[0:10]:
+        releases.append({'title': release.get('title', ''), 'thumbnail': release.get('thumb', ''), 'url': release.get('uri', '')})
     return releases
 
 def find_artist_data(artist_name):
