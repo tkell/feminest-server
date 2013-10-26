@@ -95,7 +95,9 @@ def find_data(artist_name):
     '''Find data and write data for a given artist name'''
 
     # Do the work.
+    print "in find-data, just before the call"
     artist_json = find_artist_data(artist_name)
+    print "the json %s" % artist_json
 
     # Write to redis - careful of json formatting - this needs to be a string.  
     redis.set(artist_name, artist_json)
