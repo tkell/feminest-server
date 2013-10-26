@@ -185,7 +185,7 @@ def get_data(artist_name):
 
     res = jsonify(res_dict)
     res.headers['Access-Control-Allow-Origin'] = '*'
-    return jsonify(**res_dict)
+    return res
 
 
 @app.route('/find-data/<artist_name>', methods=['GET'])
