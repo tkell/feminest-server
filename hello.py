@@ -118,12 +118,13 @@ def discogs_release_search(the_artist):
     discogs_id = the_artist.get_foreign_id('discogs').split(':')[2]
     url = 'http://api.discogs.com/artists/%s/releases' % discogs_id
     r = requests.get(url)
+    print "DISCOGS:  made it past the requests request"
 
     releases = []
-    for release in r.json()['releases']:
+    for release in r.json().get('releases', []):
         format = release.get('format', '')
         if 'single' in format.lower():
-            releases.append({'title': release['title'], 'thumbnail':release['thumb'], 'url': release['uri']})
+            releases.append({'title': release.get('title', ''), 'thumbnail': release.get('thumb', ''), 'url': release.get('uri', '')})
     return releases
 
 def find_artist_data(artist_name):
