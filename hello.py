@@ -59,12 +59,18 @@ def pronoun_search(the_artist):
 
 def wiki_member_search(the_artist):
     if the_artist.urls.get('wikipedia_url', None):
-
-
         wiki_url = the_artist.urls['wikipedia_url']
+
+        print "IN WIKI SEARCH:  %s" % wiki_url
+
         res = requests.get(wiki_url)
+        print "made it past the requests request"
+
         body = res.text
         infobox = re.search(r'<table class="infobox.+?</table>', body, re.S).group()
+        print "made it past the first big regex"
+
+
         if 'Members' not in infobox:
             number_members = 1
             men = 0
@@ -103,7 +109,10 @@ def find_artist_data(artist_name):
         return ''
 
     pronouns_dict = pronoun_search(the_artist)
+    print "we got the pronoun dict"
+
     wiki_dict = wiki_member_search(the_artist)
+    print "we got the wiki dict"
 
     data = {}
     data['artist'] = the_artist.name
