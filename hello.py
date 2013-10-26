@@ -21,6 +21,20 @@ from names import male_names, female_names
 male_names_list = male_names()
 female_names_list = female_names()
 
+
+    # TODOS:
+    # - Make the front end
+    # Make the guess
+    # - Scrape Discogs properly
+    # - Get sound from Rdio
+    # then I need to run this on ~5,000 hottt artists
+    # then I need to make the front end.  Gotta get up early early tomorrow
+
+    # and that includes making our guess.  Solo artists, we use pronouns.  Multi artists, we use name match on membmers, weighted by pronouns
+
+
+
+
 def pronoun_search(the_artist):
     bios = []
     word_count = 0
@@ -114,7 +128,6 @@ def wiki_member_search(the_artist):
         return {'wiki_url': wiki_url, 'members': number_members, 'men': men, 'women': women, 'member_names': members}
     else:
         return {'wiki_url': ''}
-        
 
 def discogs_release_search(the_artist):
     discogs_id = the_artist.get_foreign_id('discogs').split(':')[2]
@@ -157,26 +170,7 @@ def find_artist_data(artist_name):
 
     print "in find_artist_data, with a dict of %s" % data
 
-    # number of bios, number of words, members, gender of members, number of male pronouns, number of female pronouns
-    # number of male names, number of female names
-    # echonest image - 5
-    # discogs releases, discogs images, discogs links
-
-
-    # TODOS:
-    # Data for Tom Waits, CHVRCHES, My Bloody Valentine
-    # - Make the front end
-    # - Scrape Discogs properly
-    # - Get sound from Rdio
-    # then I need to run this on ~5,000 hottt artists
-    # then I need to make the front end.  Gotta get up early early tomorrow
-
-    # and that includes making our guess.  Solo artists, we use pronouns.  Multi artists, we use name match on membmers, weighted by pronouns
-
-
-    
     return json.dumps(data)
-
 
 
 @app.route('/', methods=['GET'])
@@ -188,6 +182,9 @@ def get_data(artist_name):
     '''Get the logged data for a given artist name''' 
     res_string = redis.get(artist_name)
     res_dict = json.loads(res_string)
+
+    res = jsonify(res_dict)
+    res.headers['Access-Control-Allow-Origin'] = '*'
     return jsonify(**res_dict)
 
 
